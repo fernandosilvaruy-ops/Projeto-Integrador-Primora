@@ -1,0 +1,17 @@
+# Ignora o ambiente virtual (cada colega cria o seu localmente)
+venv/
+
+# Ignora arquivos temporários e caches que o Python gera sozinho
+__pycache__/
+*.py[cod]
+
+# Ignora arquivos com senhas e chaves secretas
+.env
+
+# Ignora pastas do VS Code / PyCharm (configurações do seu editor)
+.vscode/
+.idea/
+
+# Ignora banco de dados SQLite temporários ou relatórios pesados
+*.db
+*.sqlite3
