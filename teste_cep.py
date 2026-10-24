@@ -14,5 +14,6 @@ def buscar_cep(cep):
     except requests.RequestException as e:
         return {"erro": f"Falha na requisição: {e}"}
 
-for c in ["71827-630", "99999999", "123"]:
+for c in ["71725-100", "99999999", "123"]:
     print(c, "->", buscar_cep(c))
+
