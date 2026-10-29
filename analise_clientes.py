@@ -3,17 +3,12 @@ import sys
 
 import pandas as pd
 
-# Caminho do CSV: pode ser passado na linha de comando
-# (python analise_clientes.py arquivo.csv) ou usa o nome padrão abaixo.
 ARQUIVO = sys.argv[1] if len(sys.argv) > 1 else 'clientes_distribuidora_vetor.csv'
 
-# dtype=str evita que CNPJ/telefone sejam lidos como número (perde zeros à esquerda).
-# Se der UnicodeDecodeError, troque para encoding='latin-1'.
 df = pd.read_csv(ARQUIVO, sep=';', dtype=str, encoding='utf-8')
 df.columns = df.columns.str.strip().str.lower()
 
 
-# ---------- CNPJ (numérico e alfanumérico) ----------
 def _digito(base, pesos):
   resto = sum(n * p for n, p in zip(base, pesos)) % 11
   return 0 if resto < 2 else 11 - resto
@@ -23,7 +18,6 @@ def cnpj_valido(cnpj_limpo):
   """cnpj_limpo: 14 caracteres [0-9A-Z], sem pontuação, já em maiúsculas."""
   if cnpj_limpo == cnpj_limpo[0] * 14:
     return False
-  # Cada caractere vale ord(c) - 48 (0-9 -> 0-9, A -> 17, B -> 18, ...)
   valores = [ord(c) - 48 for c in cnpj_limpo]
   pesos1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
   pesos2 = [6] + pesos1
@@ -39,7 +33,6 @@ def analisar_cnpj(val):
   # Remove só a pontuação (NÃO usar \D, que apagaria as letras)
   limpo = re.sub(r'[.\-/\s]', '', val_str)
 
-  # 12 primeiras posições: letras ou números; 2 últimas (DV): só números
   if not re.fullmatch(r'[0-9A-Z]{12}\d{2}', limpo):
     return 'Inválido (formato ou tamanho)'
   if not cnpj_valido(limpo):
@@ -54,7 +47,6 @@ def analisar_cnpj(val):
 df['status_cnpj'] = df['cnpj'].apply(analisar_cnpj)
 
 
-# ---------- Telefone ----------
 def analisar_telefone(val):
   val_str = str(val).strip()
   digitos = re.sub(r'\D', '', val_str)
@@ -71,7 +63,6 @@ def analisar_telefone(val):
 df['status_telefone'] = df['telefone'].apply(analisar_telefone)
 
 
-# ---------- Data ----------
 def analisar_data(val):
   val_str = str(val).strip()
   if re.match(r'^\d{4}-\d{2}-\d{2}$', val_str):
@@ -88,7 +79,6 @@ def analisar_data(val):
 
 df['status_data'] = df['data_cadastro'].apply(analisar_data)
 
-# ---------- Resumos ----------
 print('=== RESUMO CNPJ ===')
 print(df['status_cnpj'].value_counts())
 
