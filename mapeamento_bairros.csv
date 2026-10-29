@@ -1,0 +1,27 @@
+﻿valor_original;ocorrencias;tem_acento;caixa;espacos_extras;tem_parenteses;sufixo_df;abreviacao;complemento;chave_neutra;bairro_base_sugerido;precisa_correcao
+guara - df;1;False;minúsculas;False;False;True;False;;guara - df;Guará;True
+Guará I;2;True;misto;False;False;False;False;I;guara i;Guará;True
+Guará II;3;True;misto;False;False;False;False;II;guara ii;Guará;True
+;1;False;vazio;False;False;False;False;;;Não informado;True
+TAGUATINGA;2;False;MAIÚSCULAS;False;False;False;False;;taguatinga;Taguatinga;True
+Taguatinga;1;False;misto;False;False;False;False;;taguatinga;Taguatinga;False
+Taguatinga - DF;3;False;misto;False;False;True;False;;taguatinga - df;Taguatinga;True
+taguatinga sul;2;False;minúsculas;False;False;False;False;Sul;taguatinga sul;Taguatinga;True
+Taguatinga/DF;2;False;misto;False;False;True;False;;taguatinga/df;Taguatinga;True
+V. Pires;1;False;misto;False;False;False;True;;v. pires;Vicente Pires;True
+VICENTE PIRES;1;False;MAIÚSCULAS;False;False;False;False;;vicente pires;Vicente Pires;True
+Vicente Pires;1;False;misto;False;False;False;False;;vicente pires;Vicente Pires;False
+Vicente Pires - DF;2;False;misto;False;False;True;False;;vicente pires - df;Vicente Pires;True
+Vte Pires;3;False;misto;False;False;False;True;;vte pires;Vicente Pires;True
+AGUAS CLARAS;1;False;MAIÚSCULAS;False;False;False;False;;aguas claras;Águas Claras;True
+Aguas claras;4;False;misto;False;False;False;False;;aguas claras;Águas Claras;True
+aguas claras;3;False;minúsculas;False;False;False;False;;aguas claras;Águas Claras;True
+Águas Claras;3;True;misto;False;False;False;False;;aguas claras;Águas Claras;False
+Aguas Claras - DF;1;False;misto;False;False;True;False;;aguas claras - df;Águas Claras;True
+Águas Claras Norte;2;True;misto;False;False;False;False;Norte;aguas claras norte;Águas Claras;True
+Águas Claras Sul;1;True;misto;False;False;False;False;Sul;aguas claras sul;Águas Claras;True
+Águas Claras/DF;2;True;misto;False;False;True;False;;aguas claras/df;Águas Claras;True
+Norte (Aguas Claras);1;False;misto;False;True;False;False;Norte;norte (aguas claras);Águas Claras;True
+Norte (Águas Claras);1;True;misto;False;True;False;False;Norte;norte (aguas claras);Águas Claras;True
+Sul (Aguas Claras);1;False;misto;False;True;False;False;Sul;sul (aguas claras);Águas Claras;True
+Sul (Águas Claras);2;True;misto;False;True;False;False;Sul;sul (aguas claras);Águas Claras;True
