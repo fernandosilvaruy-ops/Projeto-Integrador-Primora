@@ -16,4 +16,5 @@ __pycache__/
 *.db
 *.sqlite3
 
+# Ignora arquivos de configuração do Windows
 desktop.ini
