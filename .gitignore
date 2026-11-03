@@ -15,3 +15,5 @@ __pycache__/
 # Ignora banco de dados SQLite temporários ou relatórios pesados
 *.db
 *.sqlite3
+
+desktop.ini
