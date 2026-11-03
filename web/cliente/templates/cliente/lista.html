@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Clientes - Vetor</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 40px; background-color: #f8f9fa; color: #333; }
+        h1 { color: #2c3e50; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.95em; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #e9ecef; }
+        th { background-color: #343a40; color: white; }
+        tr:hover { background-color: #f1f3f5; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1>📊 Clientes Registados (Vetor)</h1>
+        <p>Dados vindos diretamente do <strong>PostgreSQL</strong>.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Razão Social</th>
+                    <th>CNPJ</th>
+                    <th>E-mail</th>
+                    <th>Telefone</th>
+                    <th>Cidade/UF</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cliente in clientes %}
+                <tr>
+                    <td><strong>{{ cliente.razao_social }}</strong></td>
+                    <td>{{ cliente.cnpj|default:"-" }}</td>
+                    <td>{{ cliente.email|default:"Não informado" }}</td>
+                    <td>{{ cliente.telefone|default:"Não informado" }}</td>
+                    <td>{{ cliente.cidade|default:"-" }} / {{ cliente.uf|default:"-" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align: center; color: #718096; padding: 30px;">
+                        Nenhum cliente encontrado na base de dados.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
