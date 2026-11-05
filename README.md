@@ -222,7 +222,7 @@ Também fazem parte do projeto os scripts de dados `padronizar_Clientes.py`, `an
 
 ## 8. Regras de negócio
 
-As regras adotadas (como cada campo é limpo, o que é considerado válido e o que acontece com dados que não podem ser corrigidos) estão em [regras de negocio](REGRAS_DE_NEGOCIO.md). Os limites conhecidos da abordagem estão na [documentação técnica](docs/DOCUMENTACAO_TECNICA.md#10-limites-conhecidos).
+As regras adotadas (como cada campo é limpo, o que é considerado válido e o que acontece com dados que não podem ser corrigidos) estão em [regras de negocio](REGRAS_DE_NEGOCIO.md). Os limites conhecidos da abordagem estão na [documentação técnica](DOCUMENTACAO_TECNICA.md#10-limites-conhecidos).
 
 ---
 
