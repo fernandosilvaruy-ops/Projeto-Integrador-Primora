@@ -5,7 +5,7 @@ Projeto Integrador (Bolsa Futuro Digital) · Desafio Técnico 1 · **ETL, limpez
 
 O projeto recebe um CSV de clientes com dados sujos (bairros escritos de vários jeitos, CNPJ, telefone e data em formatos diferentes, CEPs ausentes ou inválidos) e produz uma base limpa, guardada em PostgreSQL, com registro de cada alteração feita.
 
-> Documentação completa em [`docs/`](docs/): [Documentação técnica](docs/DOCUMENTACAO_TECNICA.md) · [Regras de negócio](docs/REGRAS_DE_NEGOCIO.md) · [Estrutura dos documentos](docs/ESTRUTURA_DOCUMENTOS.md)
+> Documentação completa em: [Documentação técnica](DOCUMENTACAO_TECNICA.md) · [Regras de negócio](REGRAS_DE_NEGOCIO.md) · [Estrutura dos documentos](ESTRUTURA_DOCUMENTOS.md)
 
 ---
 
