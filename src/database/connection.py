@@ -1,4 +1,5 @@
 import os
+from sqlalchemy.engine import URL
 from pathlib import Path
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
@@ -21,8 +22,15 @@ DB_PORT = os.getenv('DB_PORT', '5432')
 if not all([DB_NAME, DB_USER, DB_PASSWORD]):
     raise ValueError("Erro: As variáveis de ambiente do banco de dados não foram totalmente preenchidas no arquivo .env!")
 
-# Monta a URL de conexão do SQLAlchemy para o PostgreSQL
-DATABASE_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+# Monta a URL de conexão do SQLAlchemy para o PostgreSQL(atualizada;-;)
+DATABASE_URL = URL.create(
+    "postgresql+psycopg2",
+    username=DB_USER,
+    password=DB_PASSWORD,
+    host=DB_HOST,
+    port=int(DB_PORT),
+    database=DB_NAME,
+)
 
 # Cria o engine de conexão do SQLAlchemy
 engine = create_engine(DATABASE_URL, echo=False)
