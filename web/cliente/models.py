@@ -13,7 +13,15 @@ class Cliente(models.Model):
     uf = models.CharField(max_length=2, blank=True, null=True)
     data_cadastro = models.DateField(blank=True, null=True)
     vendedor = models.CharField(max_length=100, blank=True, null=True)
+    codigo = models.CharField(max_length=10, unique=True, editable=False, blank=True)
+
+
+def save(self, *args, **kwargs):
+    super().save(*args, **kwargs)          # gera o id_cliente
+    if not self.codigo:
+        self.codigo = f"CLI{self.id_cliente:04d}"
+        super().save(update_fields=["codigo"])
 
     
-    def __str__(self):
-        return self.razao_social
+def __str__(self):
+    return f"{self.codigo} - {self.razao_social}"
