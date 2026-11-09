@@ -6,13 +6,16 @@ CRITERIOS = {
     "cep": "Validação e formatação de CEP"
 }
 
-def compararDados(id_cliente, original, tratado):
+def compararDados(id_cliente, original, tratado, criterios_personalizados=None):
     alteracoes =[]
 
-    for campo in original:
-        
+    # Se nenhum critério personalizado for informado,
+    # utiliza um dicionário vazio.
+    if criterios_personalizados is None:
+        criterios_personalizados = {}
 
-        # evita comparar campo vazio na tratada 
+    for campo in original:
+
         if campo not in tratado:
             continue
 
@@ -20,12 +23,20 @@ def compararDados(id_cliente, original, tratado):
         valor_tratado = tratado[campo]
 
         if valor_original != valor_tratado:
+
+            # Primeiro tenta usar o critério personalizado.
+            # Caso não exista, utiliza o critério padrão.
+            criterio = criterios_personalizados.get(
+                campo,
+                CRITERIOS.get(campo, "Não informado")
+            )
+
             alteracoes.append({
                 'id_cliente': id_cliente,
                 'campo_alterado': campo,
                 'valor_original': valor_original,
                 'valor_tratado': valor_tratado,
-                "criterio": CRITERIOS.get(campo, "Não informado")
+                "criterio": criterio
             })
 
     return alteracoes

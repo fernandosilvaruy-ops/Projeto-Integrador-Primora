@@ -1,6 +1,16 @@
+def enriquecer_cliente(cliente):
+
+    print("TESTE: entrei no enriquecimento")
+
+    cep = cliente["cep_padronizado"]
+    bairro = cliente["bairro_padronizado"]
+
+    dados_api = buscar_cep(cep)
+
+    print("Resposta do ViaCEP:", dados_api)
 import pandas as pd
 from pathlib import Path
-
+from src1.etl.enrich import enriquecer_cliente
 # Localiza a raiz do projeto
 RAIZ = Path(__file__).resolve().parents[2]
 
@@ -28,6 +38,7 @@ print(df.columns.tolist())
 
 from src1.servico.auditoria_servico import compararDados
 
+
 todas_alteracoes = []
 
 #A função iterrows() percorre os clientes do CSV, um por vez
@@ -39,12 +50,25 @@ for _, cliente in df.iterrows():
     for campo, (col_original, col_tratada) in CAMPOS.items():
         original[campo] = cliente[col_original]
         tratado[campo] = cliente[col_tratada]
+    # Executa o enriquecimento
+    resultado = enriquecer_cliente(cliente)
+
+# Atualiza o bairro tratado
+    tratado["bairro"] = resultado["bairro_final"]
+
+# Cria o dicionário de critérios
+    criterios = {}
+
+# Se a API alterou o bairro, registra o motivo
+    if resultado["bairro_final"] != cliente["bairro_padronizado"]:
+        criterios["bairro"] = resultado["criterio"]
 
     # Compara valoresoriginais e tratados
     alteracoes = compararDados(
         id_cliente=cliente["id_cliente"],        
         original=original,
-        tratado=tratado
+        tratado=tratado,
+        criterios_personalizados=criterios
     )
 
     todas_alteracoes.extend(alteracoes)
@@ -58,7 +82,19 @@ for alteracao in todas_alteracoes[:3]:
 sem_criterio = [
     a for a in todas_alteracoes
     if not a.get("criterio")
-    or a["criterio"] == "Critério não identificado"
+    or a["criterio"] in ("Critério não identificado", "Não informado")
 ]
 
 print("Alterações sem critério:", len(sem_criterio))
+
+    # Consulta o ViaCEP e aplica a regra de prioridade
+resultado = enriquecer_cliente(cliente)
+
+    # Atualiza o bairro tratado com o valor escolhido
+tratado["bairro"] = resultado["bairro_final"]
+
+    # Informa à auditoria o motivo da escolha
+criterios = {}
+
+if resultado["bairro_final"] != cliente["bairro_padronizado"]:
+        criterios["bairro"] = resultado["criterio"]
