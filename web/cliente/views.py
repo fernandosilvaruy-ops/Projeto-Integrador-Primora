@@ -1,21 +1,17 @@
 from django.shortcuts import render
-from .models import ClienteBruto, ClienteTratado
-
+from .models import ClienteBruto, ClienteTratado, AuditoriaAlteracao
 
 def listar_clientes(request):
-    # pagina principal: mostra todos os clientes cadastrados no banco de dados PostgreSQL
     clientes = ClienteBruto.objects.all()
-    total_registos = clientes.count()
-    return render(request, 'cliente/lista.html', {
-        'clientes': clientes,
-        'total_registos': total_registos
-    })  
+    context = {'clientes': clientes, 'total_registos': clientes.count()}
+    return render(request, 'cliente/lista.html', context)
 
-def clientes_tratados_view(request):
-    # Pagina de tratados: mostra apenas os clientes validados e limpos
+def clientes_tratados(request):
     clientes = ClienteTratado.objects.all()
-    total_registos = clientes.count()
-    return render(request, 'cliente/clientes_tratados.html', {
-        'clientes': clientes,
-        'total_registos': total_registos
-    })
+    context = {'clientes': clientes, 'total_registos': clientes.count()}
+    return render(request, 'cliente/clientes_tratados.html', context)
+
+def lista_auditoria(request):
+    auditorias = AuditoriaAlteracao.objects.all().order_by('-data_alteracao')
+    context = {'auditorias': auditorias, 'total_registos': auditorias.count()}
+    return render(request, 'cliente/auditoria.html', context)
