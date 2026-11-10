@@ -44,6 +44,11 @@ def carregar_dados():
     print(f"Ficheiro Bruto: {caminho_bruto}")
     print(f"Ficheiro Tratado: {caminho_tratado}")
 
+    # Limpa as tabelas antes de recarregar para garantir a gravação limpa
+    ClienteBruto.objects.all().delete()
+    ClienteTratado.objects.all().delete()
+    print("-> Registos antigos removidos da base de dados com sucesso.")
+
     # 1. CARREGAR DADOS BRUTOS
     if caminho_bruto and os.path.exists(caminho_bruto):
         df_bruto = pd.read_csv(caminho_bruto, sep=None, engine='python', dtype=str, encoding='utf-8-sig')
@@ -56,18 +61,17 @@ def carregar_dados():
                 if not id_cli:
                     continue
                 
-                ClienteBruto.objects.update_or_create(
+                ClienteBruto.objects.create(
                     id_cliente=id_cli,
-                    defaults={
-                        'razao_social': obter_valor(row, 'razao_social', 'nome', 'cliente'),
-                        'cnpj': obter_valor(row, 'cnpj', 'cpf_cnpj'),
-                        'email': obter_valor(row, 'email', 'correio_eletronico'),
-                        'telefone': obter_valor(row, 'telefone', 'fone', 'celular'),
-                        'cidade': obter_valor(row, 'cidade', 'municipio'),
-                        'uf': obter_valor(row, 'uf', 'estado'),
-                        'data_cadastro': obter_valor(row, 'data_cadastro', 'data', 'cadastro'),
-                        'vendedor_responsavel': obter_valor(row, 'vendedor_responsavel', 'vendedor', 'representante', 'nome_vendedor'),
-                    }
+                    razao_social=obter_valor(row, 'razao_social', 'nome', 'cliente'),
+                    cnpj=obter_valor(row, 'cnpj', 'cpf_cnpj'),
+                    telefone=obter_valor(row, 'telefone', 'fone', 'celular'),
+                    email=obter_valor(row, 'email', 'correio_eletronico'),
+                    bairro_informado=obter_valor(row, 'bairro_informado', 'bairro', 'bairro_original'),
+                    cidade=obter_valor(row, 'cidade', 'municipio'),
+                    uf=obter_valor(row, 'uf', 'estado'),
+                    data_cadastro=obter_valor(row, 'data_cadastro', 'data', 'cadastro'),
+                    vendedor_responsavel=obter_valor(row, 'vendedor_responsavel', 'vendedor', 'representante', 'nome_vendedor')
                 )
                 sucessos += 1
             except Exception as e:
@@ -79,19 +83,15 @@ def carregar_dados():
     # 2. CARREGAR DADOS TRATADOS
     if caminho_tratado and os.path.exists(caminho_tratado):
         df_tratado = pd.read_csv(caminho_tratado, sep=None, engine='python', dtype=str, encoding='utf-8-sig')
-        print(f"-> COLUNAS ENCONTRADAS NO CSV TRATADO: {list(df_tratado.columns)}")
         print(f"-> Encontradas {len(df_tratado)} linhas no CSV tratado.")
         
         sucessos = 0
         for index, row in df_tratado.iterrows():
             try:
-                # Alargamos a lista de nomes possíveis para o ID
                 id_cli = obter_valor(row, 'id_cliente', 'id', 'cliente_id', 'codigo', 'cod_cliente', 'idcliente')
                 if not id_cli:
-                    print(f"[AVISO TRATADO] Linha {index} ignorada. Conteúdo da linha: {dict(row)}")
                     continue
 
-                # Conversão segura de data
                 raw_data = obter_valor(row, 'data_cadastro', 'data', 'cadastro', 'datacadastro')
                 data_cad = None
                 if raw_data:
@@ -99,18 +99,20 @@ def carregar_dados():
                     if pd.notna(data_parsed):
                         data_cad = data_parsed.strftime('%Y-%m-%d')
 
-                ClienteTratado.objects.update_or_create(
+                # Tenta obter o bairro tratado da coluna 'bairro_informado' ou 'bairro'
+                bairro_val = obter_valor(row, 'bairro_informado', 'bairro', 'bairro_padronizado')
+
+                ClienteTratado.objects.create(
                     id_cliente=id_cli,
-                    defaults={
-                        'razao_social': obter_valor(row, 'razao_social', 'nome', 'cliente'),
-                        'cnpj': obter_valor(row, 'cnpj', 'cpf_cnpj'),
-                        'email': obter_valor(row, 'email', 'correio_eletronico') or None,
-                        'telefone': obter_valor(row, 'telefone', 'fone', 'celular') or None,
-                        'cidade': obter_valor(row, 'cidade', 'municipio') or None,
-                        'uf': obter_valor(row, 'uf', 'estado') or None,
-                        'data_cadastro': data_cad,
-                        'vendedor_responsavel': obter_valor(row, 'vendedor_responsavel', 'vendedor', 'representante', 'nome_vendedor') or None,
-                    }
+                    razao_social=obter_valor(row, 'razao_social', 'nome', 'cliente'),
+                    cnpj=obter_valor(row, 'cnpj', 'cpf_cnpj'),
+                    telefone=obter_valor(row, 'telefone', 'fone', 'celular') or None,
+                    email=obter_valor(row, 'email', 'correio_eletronico') or None,
+                    bairro_informado=bairro_val or None,
+                    cidade=obter_valor(row, 'cidade', 'municipio') or None,
+                    uf=obter_valor(row, 'uf', 'estado') or None,
+                    data_cadastro=data_cad,
+                    vendedor_responsavel=obter_valor(row, 'vendedor_responsavel', 'vendedor', 'representante', 'nome_vendedor') or None
                 )
                 sucessos += 1
             except Exception as e:

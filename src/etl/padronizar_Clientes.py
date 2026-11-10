@@ -2,8 +2,12 @@ import re
 import sys
 import unicodedata
 from datetime import datetime
-
+import os
 import pandas as pd
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+
+from src1.servico import cep_servico
 
 ARQUIVO = sys.argv[1] if len(sys.argv) > 1 else 'clientes_distribuidora_vetor.csv'
 SAIDA = 'clientes_tratados.csv'
@@ -91,15 +95,31 @@ REGRAS_BAIRRO = [
 ]
 
 
-def padronizar_bairro(val):
-  if pd.isna(val) or not str(val).strip():
+def padronizar_bairro(row):
+    """
+    1. Tenta usar o bairro informado no CSV, aplicando as regras locais e acentuação.
+    2. Se estiver vazio/ausente, consulta a API do ViaCEP via módulo do colega.
+    """
+    bairro_informado = row.get('bairro_informado')
+    
+    #  Se o bairro no CSV não está vazio/nulo, aplica a sua lógica existente
+    if not pd.isna(bairro_informado) and str(bairro_informado).strip() not in ['', 'nan', 'None', 'Não informado']:
+        texto = _sem_acento(str(bairro_informado))
+        for trecho, nome in REGRAS_BAIRRO:
+            if trecho in texto:
+                return nome
+        return str(bairro_informado).strip().title()
+    
+    #  Se não tem bairro informado, recorre ao ViaCEP usando o CEP do registo
+    cep = row.get('cep')
+    if not pd.isna(cep):
+        resultado = cep_servico.buscar_cep(cep)
+        if isinstance(resultado, dict) and "erro" not in resultado:
+            bairro_api = resultado.get('bairro')
+            if bairro_api:
+                return bairro_api.strip().title()
+                
     return 'Não informado'
-  texto = _sem_acento(str(val))
-  for trecho, nome in REGRAS_BAIRRO:
-    if trecho in texto:
-      return nome
-  return str(val).strip().title()  
-
 
 def padronizar_cep(val):
   if pd.isna(val):
@@ -110,41 +130,37 @@ def padronizar_cep(val):
   return f'{d[:5]}-{d[5:]}'
 
 
-# 1. Aplica as funções de padronização nas colunas originais
-df['cnpj_valido'] = df['cnpj'].apply(cnpj_valido)
-cnpj_pad = df['cnpj'].apply(padronizar_cnpj)
+# 1. Aplica todas as limpezas e preenchimentos
+cnpj_limpo = df['cnpj'].apply(limpar_cnpj)
 tel_pad = df['telefone'].apply(padronizar_telefone)
 data_pad = df['data_cadastro'].apply(padronizar_data)
 cep_pad = df['cep'].apply(padronizar_cep)
+bairro_pad = df.apply(padronizar_bairro, axis=1)
 
-if 'bairro_informado' in df.columns:
-    bairro_pad = df['bairro_informado'].apply(padronizar_bairro)
-else:
-    bairro_pad = pd.Series(['Não informado'] * len(df))
+# 2. Cria a coluna de validação do CNPJ (1 se for válido/14 dígitos, 0 caso contrário)
+df['cnpj_valido'] = cnpj_limpo.notna().astype(int)
 
-# Cria as colunas auxiliares para o relatório não dar erro
+# 3. Atribui os dados limpos às colunas oficiais e de suporte
 df['telefone_padronizado'] = tel_pad
 df['data_cadastro_padronizada'] = data_pad
-df['bairro_padronizado'] = bairro_pad
+df['bairro_informado'] = bairro_pad
 df['cep_padronizado'] = cep_pad
 
-# 2. Atualiza as colunas oficiais com os dados limpos (para a base de dados e web)
-df['cnpj'] = cnpj_pad
+df['cnpj'] = cnpj_limpo
 df['telefone'] = tel_pad
 df['data_cadastro'] = data_pad
 df['cep'] = cep_pad
-if 'bairro_informado' in df.columns and 'bairro' in df.columns:
-    df['bairro'] = bairro_pad
+df['bairro'] = bairro_pad
 
-# 3. Guarda o ficheiro tratado
+# 4. Guarda o ficheiro tratado
 SAIDA = 'clientes_tratados.csv'
 df.to_csv(SAIDA, sep=';', index=False, encoding='utf-8-sig')
 
-# 4. Relatório de qualidade (agora com todas as colunas garantidas no DataFrame)
+# 5. Relatório de qualidade
 print(f'Ficheiro gerado: {SAIDA} ({len(df)} linhas)\n')
 print(f"CNPJs válidos:              {df['cnpj_valido'].sum()} de {len(df)}")
 print(f"Telefones não reconhecidos: {df['telefone_padronizado'].isna().sum()}")
 print(f"Datas não reconhecidas:     {df['data_cadastro_padronizada'].isna().sum()}")
 print(f"CEPs ausentes/inválidos:    {df['cep_padronizado'].isna().sum()}")
 print('\nBairros após padronização:')
-print(df['bairro_padronizado'].value_counts())
+print(df['bairro_informado'].value_counts())
