@@ -15,6 +15,12 @@ django.setup()
 
 from cliente.models import ClienteBruto, ClienteTratado, AuditoriaAlteracao
 
+def executar_etl():
+    print("ETL rodando...")
+
+if __name__ == "__main__":
+    executar_etl()
+
 def encontrar_arquivo_por_prefixo(prefixos):
     for f in os.listdir(BASE_DIR):
         f_lower = f.lower()
