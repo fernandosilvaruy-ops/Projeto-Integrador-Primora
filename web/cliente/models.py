@@ -34,12 +34,15 @@ class ClienteTratado(models.Model):
 
 class AuditoriaAlteracao(models.Model):
     cliente = models.ForeignKey(
-    Cliente, on_delete=models.PROTECT, 
-    related_name='auditoria_altera'
+        'ClienteTratado', on_delete=models.CASCADE, 
+        related_name='auditoria_altera', null=True, blank=True
     )
-    id_cliente = models.IntegerField()
+    id_cliente = models.CharField(max_length=50)
     campo_alterado = models.CharField(max_length=100)
     valor_original = models.TextField(null=True, blank=True)
     valor_tratado = models.TextField(null=True, blank=True)
     criterio = models.CharField(max_length=225)
     data_alteracao = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Cliente {self.id_cliente} - {self.campo_alterado} alterado"
