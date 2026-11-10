@@ -2,13 +2,13 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <title>Dataset Bruto - Distribuidora Vetor</title>
+    <title>Dataset Bruto (Registros Originais) - Distribuidora Vetor</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
     <div class="container my-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>Dataset Bruto (Registos Originais)</h2>
+            <h2>Dataset Bruto (Registros Originais)</h2>
             <div>
                 <span class="badge bg-secondary fs-6 me-2">Total: {{ total_registos }}</span>
                 <a href="{% url 'clientes_tratados' %}" class="btn btn-primary">Ver Dados Tratados &rarr;</a>
@@ -17,38 +17,42 @@
 
         <div class="card shadow-sm">
             <div class="card-body">
-                <table class="table table-striped table-hover align-middle">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>ID Cliente</th>
-                            <th>Razão Social</th>
-                            <th>CNPJ</th>
-                            <th>E-mail</th>
-                            <th>Telefone</th>
-                            <th>Cidade / UF</th>
-                            <th>Data Cadastro</th>
-                            <th>Vendedor Responsável</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for cliente in clientes %}
-                        <tr>
-                            <td><code>{{ cliente.id_cliente }}</code></td>
-                            <td><strong>{{ cliente.razao_social|default:"-" }}</strong></td>
-                            <td><code>{{ cliente.cnpj|default:"-" }}</code></td>
-                            <td>{{ cliente.email|default:"-" }}</td>
-                            <td>{{ cliente.telefone|default:"-" }}</td>
-                            <td>{{ cliente.cidade|default:"-" }} / {{ cliente.uf|default:"-" }}</td>
-                            <td>{{ cliente.data_cadastro|default:"-" }}</td>
-                            <td>{{ cliente.vendedor_responsavel|default:"-" }}</td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="8" class="text-center text-muted py-4">Nenhum registo bruto encontrado.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID Cliente</th>
+                                <th>Razão Social</th>
+                                <th>CNPJ</th>
+                                <th>E-mail</th>
+                                <th>Telefone</th>
+                                <th>Cidade / UF</th>
+                                <th>Bairro</th>
+                                <th>Data Cadastro</th>
+                                <th>Vendedor Responsável</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cliente in clientes %}
+                            <tr>
+                                <td>{{ cliente.id_cliente }}</td>
+                                <td>{{ cliente.razao_social }}</td>
+                                <td>{{ cliente.cnpj }}</td>
+                                <td>{{ cliente.email }}</td>
+                                <td>{{ cliente.telefone }}</td>
+                                <td>{{ cliente.cidade }} / {{ cliente.uf }}</td>
+                                <td>{{ cliente.bairro_informado }}</td>
+                                <td>{{ cliente.data_cadastro }}</td>
+                                <td>{{ cliente.vendedor_responsavel }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="9" class="text-center text-muted py-4">Nenhum registo bruto encontrado.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
