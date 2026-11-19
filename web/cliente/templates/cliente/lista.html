@@ -20,6 +20,24 @@
             --head-from: #1b2437;
             --head-to: #2f3b5c;
         }
+        .upload-card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            padding: 1.35rem 1.75rem;
+            box-shadow: 0 6px 24px rgba(27, 36, 55, .07);
+        }
+        .upload-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin: 0 0 .2rem;
+            color: var(--ink);
+        }
+        .upload-hint {
+            font-size: .85rem;
+            color: var(--muted);
+            margin: 0;
+        }
 
         body {
             font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -227,6 +245,41 @@
                 <a href="{% url 'clientes_tratados' %}" class="btn btn-nav primary">Ver Dados Tratados &rarr;</a>
                 <a href="{% url 'lista_auditoria' %}" class="btn btn-nav warning">Ver Auditoria de Alterações</a>
             </div>
+        </div>
+
+<!-- Mensagens de feedback -->
+        {% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                    <div class="alert alert-{% if message.tags == 'error' %}danger{% elif message.tags == 'warning' %}warning{% else %}success{% endif %} rounded-4 shadow-sm mb-2" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Upload de CSV para raiz e banco -->
+        <div class="upload-card mb-4">
+            <form action="{% url 'upload_csv_raiz' %}" method="post" enctype="multipart/form-data" class="row g-3 align-items-center">
+                {% csrf_token %}
+                <div class="col-lg-4">
+                    <div class="upload-title">Importar CSV (Raiz + Banco)</div>
+                    <p class="upload-hint">Atualiza o CSV na raiz do projeto e salva no banco de dados.</p>
+                </div>
+                <div class="col-md-8 col-lg-5">
+                    <input
+                        type="file"
+                        name="arquivo"
+                        id="id_arquivo"
+                        class="form-control"
+                        accept=".csv"
+                        required
+                    >
+                </div>
+                <div class="col-md-4 col-lg-3 d-grid">
+                    <button type="submit" class="btn btn-nav primary">Enviar e Processar</button>
+                </div>
+            </form>
         </div>
 
         <!-- Tabela -->
