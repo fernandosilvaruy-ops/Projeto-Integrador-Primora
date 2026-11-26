@@ -70,11 +70,12 @@ def upload_csv_raiz(request):
         return redirect("lista_clientes")
 
     arquivo = form.cleaned_data["arquivo"]
+    raw_bytes = arquivo.read()
 
     try:
-        raw_bytes = arquivo.read()
         texto_csv = raw_bytes.decode("utf-8-sig")
-
+    except UnicodeDecodeError:
+        texto_csv = raw_bytes.decode("cp1252")
         # Detecta separador (, ou ;) automaticamente
         amostra = texto_csv[:2048]
         separador = ";" if amostra.count(";") > amostra.count(",") else ","
