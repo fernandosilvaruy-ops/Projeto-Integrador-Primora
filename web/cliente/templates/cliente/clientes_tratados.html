@@ -49,6 +49,14 @@
             border-radius: 50%;
             background: rgba(255, 255, 255, .06);
         }
+
+        .cell-cep {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: .85rem;
+            color: #3d4863;
+            white-space: nowrap;
+        }
+
         .eyebrow {
             text-transform: uppercase;
             letter-spacing: .14em;
@@ -239,7 +247,7 @@
 
         <!-- Tabela -->
         <div class="table-card">
-            <div class="table-wrap">
+            <div class="table-wrap" tabindex="0">
                 <table class="table table-hover align-middle dataset">
                     <thead>
                         <tr>
@@ -252,6 +260,16 @@
                             <th>Bairro Tratado</th>
                             <th>Data Cadastro</th>
                             <th>Vendedor Responsável</th>
+                            <th>CEP</th>
+                            <th class="text-center" title="Excluir registro">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                                    <path d="M10 11v6"></path>
+                                    <path d="M14 11v6"></path>
+                                    <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
+                                </svg>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -266,6 +284,7 @@
                             <td class="cell-treated">{{ cliente.bairro_informado }}</td>
                             <td class="cell-mono">{{ cliente.data_cadastro }}</td>
                             <td><span class="cell-seller">{{ cliente.vendedor_responsavel }}</span></td>
+                            <td class="cell-cep">{{ cliente.cep|default:"-" }}</td>
                             <td>
                                 <form action="{% url 'excluir_cliente_tratado' cliente.pk %}" method="post" class="d-inline" onsubmit="return confirm('Excluir o cliente {{ cliente.id_cliente }} dos dados tratados?');">
                                     {% csrf_token %}
@@ -277,7 +296,7 @@
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="10" class="empty-state">Nenhum registo tratado encontrado.</td>
+                            <td colspan="11" class="empty-state">Nenhum registo tratado encontrado.</td>
                         </tr>
                         {% endfor %}
                     </tbody>

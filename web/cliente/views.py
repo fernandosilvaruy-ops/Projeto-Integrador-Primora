@@ -1,6 +1,11 @@
 import csv
+import json
+import urllib.request
+import unicodedata
+import re
 import io
 from pathlib import Path
+import sys
 from django.conf import settings
 from django.contrib import messages
 from django.db import transaction
@@ -12,6 +17,26 @@ from datetime import datetime, date
 RAIZ_PROJETO = Path(settings.BASE_DIR).parent
 CSV_RAIZ = RAIZ_PROJETO / "clientes_distribuidora_vetor.csv"
 
+RAIZ_PROJETO = Path(settings.BASE_DIR).parent
+if str(RAIZ_PROJETO) not in sys.path:
+    sys.path.insert(0, str(RAIZ_PROJETO))
+
+CEPS_INVALIDOS_CONHECIDOS = {
+    "00000000", "11111111", "22222222", "33333333", "44444444",
+    "55555555", "66666666", "77777777", "88888888", "99999999",
+}
+
+RAIZ_PROJETO = Path(__file__).resolve().parents[2]
+if str(RAIZ_PROJETO) not in sys.path:
+    sys.path.insert(0, str(RAIZ_PROJETO))
+
+CAMINHO_SERVICO_CEP = str(Path(settings.BASE_DIR).parent / "src1" / "servico")
+if CAMINHO_SERVICO_CEP not in sys.path:
+    sys.path.insert(0, CAMINHO_SERVICO_CEP)
+
+
+from src1.servico.cep_servico import buscar_cep_por_bairro
+from cep_servico import buscar_cep
 
 def _persistir_linhas_no_banco(linhas):
     for linha in linhas:
@@ -102,6 +127,7 @@ def upload_csv_raiz(request):
         registros_por_id[id_cli] = {
             "razao_social": (linha.get("razao_social") or "").strip(),
             "cnpj": (linha.get("cnpj") or "").strip(),
+            "cep": (linha.get("cep") or "").strip(),
             "email": (linha.get("email") or "").strip(),
             "telefone": (linha.get("telefone") or "").strip(),
             "cidade": (linha.get("cidade") or "").strip(),
@@ -214,14 +240,90 @@ def tratar_clientes_pendentes(request):
     try:
         with transaction.atomic():
             for bruto in pendentes:
+                cep_atual = (getattr(bruto, "cep", "") or "").strip()
+                cidade_base = (bruto.cidade or "").strip()
+                uf_base = (bruto.uf or "").strip()
+                bairro_base = (bruto.bairro_informado or "").strip()
+
+                cep_encontrado = ""
+                dados_cep = {}
+                origem_cep = "nenhuma"
+
+                if cep_atual:
+                    cep_encontrado = cep_atual
+                    origem_cep = "proprio_bruto"
+                else:
+                    # 1. Consulta o banco primeiro por cidade + uf + bairro_informado
+                    filtro_local = {
+                        "bairro_informado__iexact": bairro_base,
+                    }
+                    if cidade_base:
+                        filtro_local["cidade__iexact"] = cidade_base
+                    if uf_base:
+                        filtro_local["uf__iexact"] = uf_base
+
+                    if bairro_base:
+                        tratado_com_cep = (
+                            ClienteTratado.objects.filter(**filtro_local)
+                            .exclude(cep__isnull=True)
+                            .exclude(cep="")
+                            .first()
+                        )
+                        if tratado_com_cep:
+                            cep_encontrado = tratado_com_cep.cep.strip()
+                            origem_cep = "banco_tratado"
+                        else:
+                            bruto_com_cep = (
+                                ClienteBruto.objects.filter(**filtro_local)
+                                .exclude(cep__isnull=True)
+                                .exclude(cep="")
+                                .first()
+                            )
+                            if bruto_com_cep:
+                                cep_encontrado = bruto_com_cep.cep.strip()
+                                origem_cep = "banco_bruto"
+
+                    # 2. Só consulta o ViaCEP se não encontrou CEP no banco
+                    if not cep_encontrado:
+                        consulta_viacep = buscar_cep(cep_atual) if cep_atual else None
+                        if isinstance(consulta_viacep, dict) and "erro" not in consulta_viacep:
+                            dados_cep = consulta_viacep
+                            cep_encontrado = str(dados_cep.get("cep") or "").strip()
+                            origem_cep = "viacep"
+
+                cep_valido = bool(cep_encontrado) and not dados_cep
+                if dados_cep and "erro" not in dados_cep:
+                    cep_valido = True
+
+                cep_tratado = cep_encontrado
+                cidade_tratada = cidade_base.title()
+                uf_tratada = uf_base.upper()
+                bairro_tratado = bairro_base.title()
+
+                if origem_cep == "viacep" and cep_valido:
+                    if dados_cep.get("localidade"):
+                        cidade_tratada = str(dados_cep["localidade"]).strip().title()
+                    if dados_cep.get("uf"):
+                        uf_tratada = str(dados_cep["uf"]).strip().upper()
+                    if dados_cep.get("bairro"):
+                        bairro_tratado = str(dados_cep["bairro"]).strip().title()
+
+                cep_tratado = resolver_cep_tratado(
+                    cep_atual=cep_tratado,
+                    cidade=cidade_tratada,
+                    uf=uf_tratada,
+                    bairro=bairro_tratado,
+                )
+
                 dados_tratados = {
                     "razao_social": (bruto.razao_social or "").strip().title(),
                     "cnpj": (bruto.cnpj or "").strip(),
+                    "cep": cep_tratado,
                     "email": (bruto.email or "").strip().lower(),
                     "telefone": (bruto.telefone or "").strip(),
-                    "cidade": (bruto.cidade or "").strip().title(),
-                    "uf": (bruto.uf or "").strip().upper(),
-                    "bairro_informado": (bruto.bairro_informado or "").strip().title(),
+                    "cidade": cidade_tratada,
+                    "uf": uf_tratada,
+                    "bairro_informado": bairro_tratado,
                     "data_cadastro": parse_data_cadastro(bruto.data_cadastro),
                     "vendedor_responsavel": (bruto.vendedor_responsavel or "").strip().title(),
                 }
@@ -234,13 +336,20 @@ def tratar_clientes_pendentes(request):
                 for campo, valor_novo in dados_tratados.items():
                     valor_antigo = getattr(bruto, campo, "")
                     if str(valor_antigo or "") != str(valor_novo or ""):
+                        if campo == "cep" and origem_cep in {"banco_tratado", "banco_bruto"}:
+                            criterio = "Reaproveitamento de CEP do banco por bairro/cidade/UF"
+                        elif origem_cep == "viacep" and campo in {"cep", "cidade", "uf", "bairro_informado"}:
+                            criterio = "Validação e enriquecimento ViaCEP"
+                        else:
+                            criterio = "Tratamento de clientes pendentes via web"
+
                         AuditoriaAlteracao.objects.create(
                             cliente=cliente_tratado,
                             id_cliente=str(bruto.id_cliente),
                             campo_alterado=campo,
                             valor_original=str(valor_antigo or ""),
                             valor_tratado=str(valor_novo or ""),
-                            criterio="Tratamento de clientes pendentes via web",
+                            criterio=criterio,
                         )
 
         messages.success(request, f"{total_pendentes} cliente(s) tratado(s) e registrado(s) na auditoria.")
@@ -248,7 +357,6 @@ def tratar_clientes_pendentes(request):
     except Exception as exc:
         messages.error(request, f"Erro ao tratar clientes pendentes: {exc}")
         return redirect("lista_clientes")
-
 
 def excluir_cliente_tratado(request, pk):
     if request.method != "POST":
@@ -260,3 +368,88 @@ def excluir_cliente_tratado(request, pk):
 
     messages.success(request, f"Cliente {id_removido} removido da lista de tratados.")
     return redirect("clientes_tratados")
+
+def limpar_bairro_para_busca(bairro: str) -> str:
+    texto = (bairro or "").replace("\ufffd", " ")
+    texto = re.sub(r"\([^)]*\)", " ", texto)
+    return " ".join(texto.split()).strip()
+
+
+def resolver_cep_cliente(bruto, modelo_bruto, modelo_tratado) -> str:
+    cep_existente = str(getattr(bruto, "cep", "") or "").strip()
+    if cep_existente:
+        return cep_existente
+
+    bairro_limpo = limpar_bairro_para_busca(getattr(bruto, "bairro_informado", ""))
+    cidade = str(getattr(bruto, "cidade", "") or "").strip()
+    uf = str(getattr(bruto, "uf", "") or "").strip().upper()
+
+    if bairro_limpo:
+        tratado_existente = (
+            modelo_tratado.objects.filter(
+                bairro_informado__iexact=bairro_limpo,
+                cidade__iexact=cidade,
+            )
+            .exclude(cep__isnull=True)
+            .exclude(cep__exact="")
+            .first()
+        )
+        if tratado_existente and tratado_existente.cep:
+            return str(tratado_existente.cep).strip()
+
+        bruto_existente = (
+            modelo_bruto.objects.filter(
+                bairro_informado__iexact=bairro_limpo,
+                cidade__iexact=cidade,
+            )
+            .exclude(cep__isnull=True)
+            .exclude(cep__exact="")
+            .first()
+        )
+        if bruto_existente and bruto_existente.cep:
+            return str(bruto_existente.cep).strip()
+
+        if cidade:
+            cep_viacep = buscar_cep_por_bairro(cidade, uf, bairro_limpo)
+            if cep_viacep:
+                return cep_viacep.strip()
+
+    return ""
+
+def _normalizar_texto(valor: str | None) -> str:
+    texto = (valor or "").strip().lower()
+    sem_acento = "".join(
+        c for c in unicodedata.normalize("NFKD", texto)
+        if not unicodedata.combining(c)
+    )
+    return " ".join(sem_acento.split())
+
+
+def _cep_valido_no_viacep(cep_digitos: str, cidade: str, uf: str) -> bool:
+    if not re.fullmatch(r"\d{8}", cep_digitos) or cep_digitos in CEPS_INVALIDOS_CONHECIDOS:
+        return False
+
+    try:
+        url = f"https://viacep.com.br/ws/{cep_digitos}/json/"
+        with urllib.request.urlopen(url, timeout=5) as resp:
+            dados = json.loads(resp.read().decode("utf-8"))
+    except Exception:
+        return False
+
+    if not isinstance(dados, dict) or dados.get("erro"):
+        return False
+
+    uf_ok = _normalizar_texto(dados.get("uf")) == _normalizar_texto(uf)
+    cidade_ok = _normalizar_texto(dados.get("localidade")) == _normalizar_texto(cidade)
+    return uf_ok and cidade_ok
+
+
+def resolver_cep_tratado(cep_atual: str | None, cidade: str | None, uf: str | None, bairro: str | None) -> str:
+    cep_limpo = (cep_atual or "").strip()
+    digitos = re.sub(r"\D", "", cep_limpo)
+
+    if _cep_valido_no_viacep(digitos, cidade or "", uf or ""):
+        return cep_limpo
+
+    novo_cep = (buscar_cep_por_bairro(cidade or "", uf or "", bairro or "") or "").strip()
+    return novo_cep or cep_limpo

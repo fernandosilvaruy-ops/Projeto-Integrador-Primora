@@ -9,6 +9,7 @@ class ClienteBruto(models.Model):
     cidade = models.CharField(max_length=100, blank=True, null=True)
     bairro_informado = models.CharField(max_length=100, null=True, blank=True)
     uf = models.CharField(max_length=10, blank=True, null=True)
+    cep = models.CharField(max_length=9, null=True, blank=True)
     data_cadastro = models.CharField(max_length=100, blank=True, null=True)
     vendedor_responsavel = models.CharField(max_length=100, blank=True, null=True)
 
@@ -27,6 +28,7 @@ class ClienteTratado(models.Model):
     uf = models.CharField(max_length=10, blank=True, null=True)
     data_cadastro = models.DateField(blank=True, null=True)
     vendedor_responsavel = models.CharField(max_length=100, blank=True, null=True)
+    cep = models.CharField(max_length=9, null=True, blank=True)
 
     def __str__(self):
         return f"{self.id_cliente} - {self.razao_social}"
