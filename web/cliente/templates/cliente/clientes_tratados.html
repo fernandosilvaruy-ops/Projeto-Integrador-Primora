@@ -266,10 +266,18 @@
                             <td class="cell-treated">{{ cliente.bairro_informado }}</td>
                             <td class="cell-mono">{{ cliente.data_cadastro }}</td>
                             <td><span class="cell-seller">{{ cliente.vendedor_responsavel }}</span></td>
+                            <td>
+                                <form action="{% url 'excluir_cliente_tratado' cliente.pk %}" method="post" class="d-inline" onsubmit="return confirm('Excluir o cliente {{ cliente.id_cliente }} dos dados tratados?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        Excluir
+                                    </button>
+                                </form>
+                            </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="9" class="empty-state">Nenhum registo tratado encontrado.</td>
+                            <td colspan="10" class="empty-state">Nenhum registo tratado encontrado.</td>
                         </tr>
                         {% endfor %}
                     </tbody>

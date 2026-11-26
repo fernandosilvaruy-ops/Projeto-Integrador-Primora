@@ -6,4 +6,6 @@ urlpatterns = [
     path('tratados/', views.clientes_tratados, name='clientes_tratados'),
     path('auditoria/', views.lista_auditoria, name='lista_auditoria'),
     path("upload-csv/", views.upload_csv_raiz, name="upload_csv_raiz"),
+    path("tratar-pendentes/", views.tratar_clientes_pendentes, name="tratar_clientes_pendentes"),
+    path("tratados/<int:pk>/excluir/", views.excluir_cliente_tratado, name="excluir_cliente_tratado"),
 ]

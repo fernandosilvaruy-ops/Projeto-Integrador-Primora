@@ -1,0 +1,49 @@
+id_cliente,razao_social,cnpj,email,telefone,cidade,uf,bairro_informado,data_cadastro,vendedor_responsavel
+CLI0001,Mercadinho Boa Vista,84.959.310/3413-16,contato@mercadinhobo.com.br,61970855700,Bras�lia,DF,Sul (�guas Claras),21/06/2022,Bruno Almeida
+CLI0002,Comercial S�o Judas,28.327.648/3503-05,contato@comercials�o.com.br,+55 61 95386-2084,Bras�lia,DF,Sul (Aguas Claras),07/10/2023,Camila Torres
+CLI0003,Armarinhos Silva & Cia,42.388.496/9653-28,contato@armarinhossi.com.br,+55 61 92489-1771,Bras�lia,DF,Taguatinga - DF,28/02/2022,Camila Torres
+CLI0004,Emp�rio Vale Verde,69.784.801/8451-46,contato@emp�riovalev.com.br,(61) 98433-1053,Bras�lia,DF,aguas claras,"Dec 24, 2023",Diego Martins
+CLI0005,Mercearia Dois Irm�os,89.325.288/0957-01,contato@merceariadoi.com.br,61951273847,Bras�lia,DF,Taguatinga/DF,08/01/2022,Diego Martins
+CLI0006,Casa das Tintas Ip�,82.278.248/9638-34,contato@casadastinta.com.br,+55 61 97118-8177,Bras�lia,DF,�guas Claras,17/08/2021,Camila Torres
+CLI0007,Distribuidora Popular Centro-Oeste,83.930.103/1051-83,contato@distribuidor.com.br,61999788677,Bras�lia,DF,TAGUATINGA,16/04/2025,Camila Torres
+CLI0008,Bazar Estrela Dourada,31.165.667/0106-51,contato@bazarestrela.com.br,(61) 94139-4116,Bras�lia,DF,V. Pires,"Aug 18, 2022",Juliana Reis
+CLI0009,Supermercado Nova Alian�a,10.801.326/7736-02,contato@supermercado.com.br,+55 61 91035-7396,Bras�lia,DF,Aguas claras,09/08/2023,Juliana Reis
+CLI0010,Papelaria Horizonte,34.309.805/0097-88,contato@papelariahor.com.br,(61) 91931-9320,Bras�lia,DF,�guas Claras/DF,03/03/2021,Diego Martins
+CLI0011,Ferragens Uni�o,93.990.916/9985-43,contato@ferragensuni.com.br,61942035886,Bras�lia,DF,Vicente Pires,09/07/2022,Bruno Almeida
+CLI0012,Mercado Cantinho do Sabor,79.911.838/4251-35,contato@mercadocanti.com.br,61931172421,Bras�lia,DF,Aguas Claras - DF,15/09/2023,Diego Martins
+CLI0013,Loja Fatima Confec��es,24.118.244/9353-48,contato@lojafatimaco.com.br,+55 61 95114-1832,Bras�lia,DF,guara - df,03/11/2024,Bruno Almeida
+CLI0014,Dep�sito S�o Roque,27868011280598,contato@dep�sitos�or.com.br,(61) 98041-3088,Bras�lia,DF,Taguatinga,02/05/2023,Rafael Souza
+CLI0015,Comercial Rio Bonito,69.232.260/2563-42,contato@comercialrio.com.br,(61) 3491-1634,Bras�lia,DF,AGUAS CLARAS,28/08/2022,Camila Torres
+CLI0016,Minimercado Vit�ria R�gia,36541458685014,contato@minimercadov.com.br,(61) 95349-1626,Bras�lia,DF,Vicente Pires - DF,04/10/2024,Bruno Almeida
+CLI0017,Casa de Carnes Ouro Fino,93.406.088/3561-59,contato@casadecarnes.com.br,61999038359,Bras�lia,DF,Vte Pires,"Feb 28, 2023",Diego Martins
+CLI0018,Armaz�m Planalto,82.366.299/4680-44,contato@armaz�mplana.com.br,(61) 98043-6279,Bras�lia,DF,Vte Pires,15/08/2024,Camila Torres
+CLI0019,Bazar Flor de Lis,48951343320037,contato@bazarflordel.com.br,61 3970-2193,Bras�lia,DF,Guar� II,15/07/2025,Camila Torres
+CLI0020,Mercado Bom Pre�o DF,20.163.287/0831-72,contato@mercadobompr.com.br,+55 61 99702-6198,Bras�lia,DF,Taguatinga - DF,25/08/2025,Diego Martins
+CLI0021,Distribuidora Cerrado Norte,77.434.873/4714-34,contato@distribuidor.com.br,61952910691,Bras�lia,DF,taguatinga sul,18/02/2022,Camila Torres
+CLI0022,Comercial �guas do Sul,66587603669096,contato@comercial�gu.com.br,+55 61 91096-6763,Bras�lia,DF,TAGUATINGA,10/07/2024,Diego Martins
+CLI0023,Padaria Trigo Dourado,34670656272980,contato@padariatrigo.com.br,+55 61 91444-2375,Bras�lia,DF,Taguatinga - DF,"jul 21, 2022",Juliana Reis
+CLI0024,Loja de Utilidades Girassol,37.556.464/1708-05,contato@lojadeutilid.com.br,(61) 92124-1659,Bras�lia,DF,Sul (�guas Claras),25/01/2022,Camila Torres
+CLI0025,Emp�rio do Produtor,27193745299124,contato@emp�riodopro.com.br,(61) 3692-1420,Bras�lia,DF,Taguatinga/DF,10/10/2024,Juliana Reis
+CLI0026,Mercadinho Recanto Feliz,49190586518506,contato@mercadinhore.com.br,+55 61 92729-8102,Bras�lia,DF,VICENTE PIRES,12/11/2024,Camila Torres
+CLI0027,Casa da Limpeza Total,87.769.453/1473-79,contato@casadalimpez.com.br,61 3784-7209,Bras�lia,DF,Guar� I,11/01/2024,Bruno Almeida
+CLI0028,Comercial Serra Azul,49.480.831/3678-37,contato@comercialser.com.br,+55 61 98342-1282,Bras�lia,DF,Aguas claras,03/05/2022,Juliana Reis
+CLI0029,Armaz�m Fazendinha,85.685.574/4431-35,contato@armaz�mfazen.com.br,(61) 3860-9779,Bras�lia,DF,�guas Claras Sul,25/12/2022,Camila Torres
+CLI0030,Bazar Nova Esperan�a,34.352.408/2400-84,contato@bazarnovaesp.com.br,(61) 99042-2680,Bras�lia,DF,Norte (�guas Claras),28/01/2025,Bruno Almeida
+CLI0031,Distribuidora Vale do Alvorada,04.711.671/9022-94,contato@distribuidor.com.br,(61) 3354-2940,Bras�lia,DF,Guar� I,18/07/2025,Diego Martins
+CLI0032,Mercearia Central DF,74.964.990/9133-41,contato@merceariacen.com.br,(61) 94929-3847,Bras�lia,DF,aguas claras,"Feb 18, 2022",Rafael Souza
+CLI0033,Loja Bom Retiro,03.447.134/9361-83,contato@lojabomretir.com.br,(61) 95352-3330,Bras�lia,DF,Vicente Pires - DF,03/01/2022,Bruno Almeida
+CLI0034,Comercial Duas Palmeiras,17.464.887/7190-65,contato@comercialdua.com.br,61 3356-1423,Bras�lia,DF,Guar� II,"Apr 3, 2025",Diego Martins
+CLI0035,Casa das Bebidas Real,02.787.429/6717-56,contato@casadasbebid.com.br,61953091709,Bras�lia,DF,�guas Claras,22/02/2022,Bruno Almeida
+CLI0036,Mercadinho Nossa Senhora,07.154.516/8087-60,contato@mercadinhono.com.br,(61) 99494-6927,Bras�lia,DF,taguatinga sul,20/08/2024,Rafael Souza
+CLI0037,Armarinhos Ponto Certo,10.932.480/8613-17,contato@armarinhospo.com.br,(61) 3763-3522,Bras�lia,DF,Aguas claras,"Dec 16, 2023",Diego Martins
+CLI0038,Emp�rio Ch�o Vermelho,78.263.982/1465-84,contato@emp�rioch�ov.com.br,(61) 3389-5891,Bras�lia,DF,Vte Pires,27/10/2025,Juliana Reis
+CLI0039,Distribuidora Horizonte Azul,58.867.533/9636-05,contato@distribuidor.com.br,+55 61 97246-7325,Bras�lia,DF,aguas claras,22/11/2022,Juliana Reis
+CLI0040,Casa de Materiais Rocha,71.870.262/1745-96,contato@casademateri.com.br,(61) 3972-6383,Bras�lia,DF,�guas Claras,28/11/2025,Juliana Reis
+CLI0041,Mercado Popular Central,13.431.611/7240-05,contato@mercadopopul.com.br,(61) 3400-6873,Bras�lia,DF,Norte (Aguas Claras),12/07/2022,Camila Torres
+CLI0042,Comercial Passo Firme,19693792374740,contato@comercialpas.com.br,+55 61 95712-9955,Bras�lia,DF,�guas Claras Norte,06/02/2024,Bruno Almeida
+CLI0043,Bazar Sol Nascente,43.671.369/5944-06,contato@bazarsolnasc.com.br,61911086890,Bras�lia,DF,�guas Claras Norte,"nov 19, 2021",Diego Martins
+CLI0044,Dep�sito Cerrado Sul,53394210470952,contato@dep�sitocerr.com.br,(61) 3402-6352,Bras�lia,DF,�guas Claras/DF,24/07/2022,Camila Torres
+CLI0045,Loja Multi Utilidades,47.451.712/3685-16,contato@lojamultiuti.com.br,(61) 3370-9791,Bras�lia,DF,Aguas claras,04/08/2023,Bruno Almeida
+CLI0046,Armaz�m Boa Colheita,37.098.593/1746-12,contato@armaz�mboaco.com.br,(61) 3138-5986,Bras�lia,DF,Guar� II,16/02/2021,Camila Torres
+CLI0047,Mercadinho Sem Endere�o Completo,82.675.869/2617-96,contato@semendereco.com.br,61914391105,Bras�lia,DF,,23/06/2022,Juliana Reis
+CLI0048,Barbearia Do Junior Completo,82.675.869/2617-96,contato@semendereco.com.br,61914391105,belem,DF,,23/06/2022,Juliana Reis
