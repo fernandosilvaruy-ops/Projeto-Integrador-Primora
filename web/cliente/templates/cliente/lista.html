@@ -280,6 +280,15 @@
                     <button type="submit" class="btn btn-nav primary">Enviar e Processar</button>
                 </div>
             </form>
+
+            <div class="mt-2">
+                <form action="{% url 'tratar_clientes_pendentes' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-nav primary w-100">
+                        Tratar Novos Clientes
+                    </button>
+                </form>
+            </div>
         </div>
 
         <!-- Tabela -->
